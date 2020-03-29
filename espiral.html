@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mina em espiral</title>
+    <style>
+        body,html{
+            height: 100%;
+            margin: 0;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: bold;
+        } 
+        .container{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .entradas{
+            margin-top: 1.5rem;
+            width: 33rem;
+            height: 3.7rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0.5rem;
+            background-color:rgb(18, 156, 0);
+            color: rgb(255, 255, 255);
+            padding: 1.2rem;
+            
+        }
+        p{
+            margin: 0;
+        }
+        .coordenadas{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .inputcoord{
+            margin-left: 0.4rem;
+            width: 5rem;
+            height: 1rem;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.75rem;
+            background-color: rgb(3, 75, 19);
+            padding-left: 0.1rem;
+            border: solid 1px rgb(19, 102, 8);
+            color: white;
+        }
+        .coord{
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+        button{
+            margin-left: 1.3rem;
+        }
+        .linha{
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            margin: 0.7rem 0 0.7rem 0;
+
+         /*    border-top: solid 1px rgb(160, 160, 160);
+            border-bottom: solid 1px rgb(160, 160, 160);
+            background-color: rgb(224, 224, 224); */
+        }
+        .linha-container{
+            display: flex;
+            border: 1px solid rgb(110, 110, 110);
+            width: 18rem;
+            background-color: rgb(215, 242, 255);
+            justify-content: space-between;
+        }
+        .linha-elemento{
+            width: 5rem;
+            text-align: left;
+        }
+        .indice{
+            width: 3rem;
+            text-align: center;
+            background-color: rgb(150, 243, 186);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="entradas">
+            <p>Entre com as coordenadas de início:</p> 
+            <div class="coordenadas">
+                <div class="coord" ><p>Nº de curvas: </p><input class="inputcoord" type="number" id="inputn_curvas"></div>
+                <div class="coord" ><p>x<sub>o</sub>: </p><input class="inputcoord" type="number" id="inputx"></div>
+                <div class="coord" ><p>z<sub>o</sub>: </p><input class="inputcoord" type="number" id="inputz"></div>
+                
+                <button onclick="btnclick()" id="btn">Calcular</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var x=0,z=0,n_curvas=0;
+        let btnclick = () =>{      
+            n_curvas = document.getElementById('inputn_curvas').value;
+            x = parseInt(document.getElementById('inputx').value);
+            z = parseInt(document.getElementById('inputz').value);
+            
+            
+            var i;
+            let linha;
+            while(linha = document.querySelector('.linha')){
+                linha.parentNode.removeChild(linha);
+            } 
+
+            for(i=0; i<n_curvas; i++){
+
+                if(i % 4 == 0)
+                    z+=((i/2)*4)+3;
+                if(i % 4 == 1)
+                    x-=(1 + (i-1)/2)*4;
+                if(i % 4 == 2)
+                    z-=((i/2)*4+3);
+                if(i % 4 == 3)
+                    x+=(i+1)*2;
+
+                var div_linha = document.createElement('div');
+                div_linha.classList.add('linha');
+
+
+                div_linha.innerHTML = 
+                    '<input type="checkbox" class="checkbox">'+
+                    '<div class="linha-container">'+
+                        
+                        '<div class="linha-elemento indice">'+
+                            (i+1)+
+                        '</div>'+
+
+                        '<div class="linha-elemento">'+
+                            "x: " + x+ 
+                        '</div>'+
+                        
+                        '<div class="linha-elemento">'+
+                            "z: " + z+
+                        '</div>';
+
+                    '</div>';   
+
+                
+                let body = document.querySelector('body');
+                body.appendChild(div_linha);    
+                if (document.getElementById('btn').innerHTML === "Calcular")
+                    document.getElementById('btn').innerHTML = "Recalcular"
+            }
+
+        }
+        let body = document.querySelector('body');
+        body.addEventListener('click',event => {
+            targetCheckbox = event.target.closest('.checkbox');
+            if(!targetCheckbox) return;
+            if(targetCheckbox.checked === true){
+                targetCheckbox.parentNode.childNodes[1].style.backgroundColor = "rgb(255, 168, 168)";
+                targetCheckbox.parentNode.childNodes[1].style.textDecoration = "line-through";
+            }else{
+                targetCheckbox.parentNode.childNodes[1].style.backgroundColor = "rgb(215, 242, 255)";
+                targetCheckbox.parentNode.childNodes[1].style.textDecoration = "none";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
